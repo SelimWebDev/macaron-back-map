@@ -5,8 +5,11 @@ import { AppModule } from './../src/app.module';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
+  
+  const nbOfAllArrondissement = 20;
   const nbOfAllTournages = 8919;
   const nbOfTournagesFiltered = 248;
+  
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -14,6 +17,20 @@ describe('AppController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+  });
+  
+   describe('GET /arrondissements', function () {
+    it('responds with array of geojson arrondissements', async function () {
+      //test
+      const response = await request(app.getHttpServer()).get(
+        '/arrondissements',
+      );
+
+      //assert
+      expect(response.headers['content-type']).toMatch(/json/);
+      expect(response.status).toEqual(200);
+      expect(response.body.length).toEqual(nbOfAllArrondissement);
+    });
   });
 
   describe('GET tournages', function () {
